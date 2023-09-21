@@ -45,7 +45,7 @@
             this.welcomeLabel.Name = "welcomeLabel";
             this.welcomeLabel.Size = new System.Drawing.Size(780, 38);
             this.welcomeLabel.TabIndex = 0;
-            this.welcomeLabel.Text = "Hello, Welcome to Store Name.";
+            this.welcomeLabel.Text = "Hello! Welcome to our Restaurant";
             this.welcomeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // nameInputBox

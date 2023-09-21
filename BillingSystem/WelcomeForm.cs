@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -120,7 +121,45 @@ namespace BillingSystem
                 contactInputBox.ForeColor = Color.Red;
             } else
             {
-                //Todo
+                try
+                {
+                    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\naman\source\repos\BillingSystem\BillingSystem\BillingSystem.mdf;Integrated Security=True";
+                    SqlConnection sqlConnection = new SqlConnection(connectionString);
+                    sqlConnection.Open();
+
+                    string query =
+                        "INSERT INTO CUSTOMER(name, contact) " +
+                        "VALUES(@name, @contact)";
+
+                    SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                    cmd.Parameters.AddWithValue("@name", nameInputBox.Text);
+                    cmd.Parameters.AddWithValue("@contact", contactInputBox.Text);
+
+                    cmd.ExecuteNonQuery();
+
+                    sqlConnection.Close();
+                    
+                    string contact = contactInputBox.Text;
+                    BillingForm billingForm = new BillingForm(contact);
+                    billingForm.Show();
+
+                    this.Close();
+
+                } catch (SqlException ex)
+                {
+                    if (ex.Number == 2627 || ex.Number == 2601)
+                    {
+                        string contact = contactInputBox.Text;
+                        BillingForm billingForm = new BillingForm(contact);
+                        billingForm.Show();
+
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error!");
+                    }
+                }
             }
         }
     }
