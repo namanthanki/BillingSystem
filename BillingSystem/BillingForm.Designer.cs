@@ -43,6 +43,10 @@
             this.TotalBillLabel = new System.Windows.Forms.Label();
             this.FinishButton = new System.Windows.Forms.Button();
             this.CustomerNameLabel = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.CustomerNameText = new System.Windows.Forms.TextBox();
+            this.TotalText = new System.Windows.Forms.TextBox();
+            this.DateText = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridTable)).BeginInit();
             this.SuspendLayout();
             // 
@@ -74,20 +78,11 @@
             // ProductsComboBox
             // 
             this.ProductsComboBox.FormattingEnabled = true;
-            this.ProductsComboBox.Items.AddRange(new object[] {
-            "Tea",
-            "Coffee",
-            "Biscuits",
-            "Chips",
-            "Bread Butter",
-            "Vegetable Sandwich ",
-            "Idli",
-            "Dosa",
-            "Masala Dosa"});
             this.ProductsComboBox.Location = new System.Drawing.Point(179, 64);
             this.ProductsComboBox.Name = "ProductsComboBox";
             this.ProductsComboBox.Size = new System.Drawing.Size(214, 24);
             this.ProductsComboBox.TabIndex = 8;
+            this.ProductsComboBox.SelectedIndexChanged += new System.EventHandler(this.ProductsComboBox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -160,7 +155,7 @@
             // TotalBillLabel
             // 
             this.TotalBillLabel.AutoSize = true;
-            this.TotalBillLabel.Location = new System.Drawing.Point(83, 577);
+            this.TotalBillLabel.Location = new System.Drawing.Point(382, 578);
             this.TotalBillLabel.Name = "TotalBillLabel";
             this.TotalBillLabel.Size = new System.Drawing.Size(81, 16);
             this.TotalBillLabel.TabIndex = 15;
@@ -178,17 +173,54 @@
             // CustomerNameLabel
             // 
             this.CustomerNameLabel.AutoSize = true;
-            this.CustomerNameLabel.Location = new System.Drawing.Point(80, 25);
+            this.CustomerNameLabel.Location = new System.Drawing.Point(80, 575);
             this.CustomerNameLabel.Name = "CustomerNameLabel";
             this.CustomerNameLabel.Size = new System.Drawing.Size(110, 16);
             this.CustomerNameLabel.TabIndex = 18;
             this.CustomerNameLabel.Text = "Customer Name: ";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(641, 578);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 16);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Date";
+            // 
+            // CustomerNameText
+            // 
+            this.CustomerNameText.Enabled = false;
+            this.CustomerNameText.Location = new System.Drawing.Point(197, 575);
+            this.CustomerNameText.Name = "CustomerNameText";
+            this.CustomerNameText.Size = new System.Drawing.Size(140, 22);
+            this.CustomerNameText.TabIndex = 20;
+            // 
+            // TotalText
+            // 
+            this.TotalText.Enabled = false;
+            this.TotalText.Location = new System.Drawing.Point(469, 572);
+            this.TotalText.Name = "TotalText";
+            this.TotalText.Size = new System.Drawing.Size(140, 22);
+            this.TotalText.TabIndex = 21;
+            // 
+            // DateText
+            // 
+            this.DateText.Enabled = false;
+            this.DateText.Location = new System.Drawing.Point(692, 576);
+            this.DateText.Name = "DateText";
+            this.DateText.Size = new System.Drawing.Size(140, 22);
+            this.DateText.TabIndex = 22;
             // 
             // BillingForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1036, 633);
+            this.Controls.Add(this.DateText);
+            this.Controls.Add(this.TotalText);
+            this.Controls.Add(this.CustomerNameText);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.CustomerNameLabel);
             this.Controls.Add(this.FinishButton);
             this.Controls.Add(this.TotalBillLabel);
@@ -226,5 +258,9 @@
         private System.Windows.Forms.Label TotalBillLabel;
         private System.Windows.Forms.Button FinishButton;
         private System.Windows.Forms.Label CustomerNameLabel;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox CustomerNameText;
+        private System.Windows.Forms.TextBox TotalText;
+        private System.Windows.Forms.TextBox DateText;
     }
 }

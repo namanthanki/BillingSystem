@@ -54,8 +54,8 @@ namespace BillingSystem
                 totalBillAmount += productTotal;
             }
 
-            TotalBillLabel.Text = "Count Total: ";
-            TotalBillLabel.Text += totalBillAmount.ToString();
+            TotalText.Text = "";
+            TotalText.Text += totalBillAmount.ToString();
         }
 
         private void BillingForm_Load(object sender, EventArgs e)
@@ -77,10 +77,14 @@ namespace BillingSystem
             while(reader.Read())
             {
                 string customerName = reader["name"].ToString();
-                CustomerNameLabel.Text += customerName;
+                CustomerNameText.Text = customerName;
             }
 
             sqlConnection.Close();
+
+            FillProductNames();
+
+            DateText.Text = DateTime.Now.ToShortDateString();
         }
 
         private void DataGridTable_SelectionChanged(object sender, EventArgs e)
@@ -96,6 +100,55 @@ namespace BillingSystem
 
             TotalBillLabel.Text = "Count Total: ";
             TotalBillLabel.Text += totalBillAmount.ToString();
+        }
+
+        private void FillProductNames()
+        {
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\naman\source\repos\BillingSystem\BillingSystem\BillingSystem.mdf;Integrated Security=True";
+            SqlConnection conn = new SqlConnection(connectionString);
+
+            conn.Open();
+
+            string query = "SELECT name FROM PRODUCT";
+            SqlCommand cmd = new SqlCommand(query, conn);
+
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            List<string> itemsList = new List<string>();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    string name = reader.GetString(0).ToString();
+                    itemsList.Add(name);
+                }
+            }
+
+            ProductsComboBox.DataSource = itemsList;
+
+            conn.Close();
+        }
+
+        private void ProductsComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\naman\source\repos\BillingSystem\BillingSystem\BillingSystem.mdf;Integrated Security=True";
+            SqlConnection conn = new SqlConnection(connectionString);
+
+            conn.Open();
+
+            string query = "SELECT price FROM PRODUCT WHERE name = @name";
+            SqlCommand cmd = new SqlCommand(query, conn);
+
+            cmd.Parameters.AddWithValue("@name", ProductsComboBox.Text);
+            SqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                PriceTextBox.Text = reader.GetFieldValue<int>(0).ToString();
+            }
+
+            conn.Close();
         }
     }
 }
