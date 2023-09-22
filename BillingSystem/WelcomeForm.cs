@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -106,6 +107,36 @@ namespace BillingSystem
             this.Close();
         }
 
+        bool CheckForDetails(SqlConnection connection, string name, string contact)
+        {
+            using (SqlCommand command = new SqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandText = "SELECT COUNT(*) FROM CUSTOMER WHERE Name = @name AND Contact = @contact";
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@contact", contact);
+
+                int count = (int)command.ExecuteScalar();
+
+                return count > 0;
+            }
+        }
+
+        bool CheckForNameConflict(SqlConnection connection, string name, string contact)
+        {
+            using (SqlCommand command = new SqlCommand())
+            {
+                command.Connection = connection;
+                command.CommandText = "SELECT COUNT(*) FROM CUSTOMER WHERE Name = @name AND Contact <> @contact";
+                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@contact", contact);
+
+                int count = (int)command.ExecuteScalar();
+
+                return count > 0;
+            }
+        }
+
         private void showMenuBtn_Click(object sender, EventArgs e)
         {
             bool condition = String.IsNullOrWhiteSpace(nameInputBox.Text) || String.IsNullOrWhiteSpace(contactInputBox.Text);
@@ -121,45 +152,73 @@ namespace BillingSystem
                 contactInputBox.ForeColor = Color.Red;
             } else
             {
-                try
+                string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\naman\source\repos\BillingSystem\BillingSystem\BillingSystem.mdf;Integrated Security=True";
+                SqlConnection sqlConnection = new SqlConnection(connectionString);
+                sqlConnection.Open();
+
+                /*string query =
+                    "INSERT INTO CUSTOMER(name, contact) " +
+                    "VALUES(@name, @contact)";
+
+                SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                cmd.Parameters.AddWithValue("@name", nameInputBox.Text);
+                cmd.Parameters.AddWithValue("@contact", contactInputBox.Text);
+
+                cmd.ExecuteNonQuery();
+
+                sqlConnection.Close();
+
+                string contact = contactInputBox.Text;
+                BillingForm billingForm = new BillingForm(contact);
+                billingForm.Show();*/
+
+                string searchProductQuery = "SELECT * FROM CUSTOMER WHERE name = @name";
+                SqlCommand searchCommand = new SqlCommand(searchProductQuery, sqlConnection);
+
+                searchCommand.Parameters.AddWithValue("@name", nameInputBox.Text);
+
+                bool isValid = CheckForDetails(sqlConnection, nameInputBox.Text, contactInputBox.Text);
+
+                if (isValid)
                 {
-                    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\naman\source\repos\BillingSystem\BillingSystem\BillingSystem.mdf;Integrated Security=True";
-                    SqlConnection sqlConnection = new SqlConnection(connectionString);
-                    sqlConnection.Open();
-
-                    string query =
-                        "INSERT INTO CUSTOMER(name, contact) " +
-                        "VALUES(@name, @contact)";
-
-                    SqlCommand cmd = new SqlCommand(query, sqlConnection);
-                    cmd.Parameters.AddWithValue("@name", nameInputBox.Text);
-                    cmd.Parameters.AddWithValue("@contact", contactInputBox.Text);
-
-                    cmd.ExecuteNonQuery();
-
-                    sqlConnection.Close();
-                    
                     string contact = contactInputBox.Text;
                     BillingForm billingForm = new BillingForm(contact);
                     billingForm.Show();
-
-                    this.Close();
-
-                } catch (SqlException ex)
-                {
-                    if (ex.Number == 2627 || ex.Number == 2601)
-                    {
-                        string contact = contactInputBox.Text;
-                        BillingForm billingForm = new BillingForm(contact);
-                        billingForm.Show();
-
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error!");
-                    }
                 }
+                else
+                {
+                    if(!CheckForNameConflict(sqlConnection, nameInputBox.Text, contactInputBox.Text))
+                    {
+                        try
+                        {
+                            string query =
+                            "INSERT INTO CUSTOMER(name, contact) " +
+                            "VALUES(@name, @contact)";
+
+                            SqlCommand cmd = new SqlCommand(query, sqlConnection);
+                            cmd.Parameters.AddWithValue("@name", nameInputBox.Text);
+                            cmd.Parameters.AddWithValue("@contact", contactInputBox.Text);
+
+                            cmd.ExecuteNonQuery();
+
+                            sqlConnection.Close();
+
+                            string contact = contactInputBox.Text;
+                            BillingForm billingForm = new BillingForm(contact);
+                            billingForm.Show();
+                        } catch(SqlException sqlEx)
+                        {
+                            MessageBox.Show("Contact Already Exists!");
+                        }
+                    } else
+                    {
+                        MessageBox.Show("Invalid Details!.");
+                    }
+
+                }
+
+                this.Close();
+
             }
         }
     }
